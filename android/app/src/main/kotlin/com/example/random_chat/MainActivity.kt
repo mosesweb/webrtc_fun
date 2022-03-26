@@ -1,4 +1,4 @@
-package com.example.random_chat
+package com.fileidea.randomchat
 
 import io.flutter.embedding.android.FlutterActivity
 
