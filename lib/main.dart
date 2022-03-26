@@ -2,10 +2,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:random_chat/signaling.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  if (kIsWeb) {
+    await Firebase.initializeApp();
+  } else {
+    // NOT running on the web!
+    await Firebase.initializeApp();
+  }
   runApp(MyApp());
 }
 
@@ -65,50 +71,44 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  signaling.openUserMedia(_localRenderer, _remoteRenderer);
-                },
-                child: Text("Open camera & microphone"),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  roomId = await signaling.createRoom(_remoteRenderer);
-                  textEditingController.text = roomId!;
-                  setState(() {});
-                },
-                child: Text("Create room"),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Add roomId
-                  signaling.joinRoom(
-                    textEditingController.text,
-                    _remoteRenderer,
-                  );
-                },
-                child: Text("Join room"),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  signaling.hangUp(_localRenderer);
-                },
-                child: Text("Hangup"),
-              )
-            ],
+          ElevatedButton(
+            onPressed: () {
+              signaling.openUserMedia(_localRenderer, _remoteRenderer);
+            },
+            child: Text("Open camera & microphone"),
+          ),
+          SizedBox(
+            width: 8,
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              roomId = await signaling.createRoom(_remoteRenderer);
+              textEditingController.text = roomId!;
+              setState(() {});
+            },
+            child: Text("Create room"),
+          ),
+          SizedBox(
+            width: 8,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Add roomId
+              signaling.joinRoom(
+                textEditingController.text,
+                _remoteRenderer,
+              );
+            },
+            child: Text("Join room"),
+          ),
+          SizedBox(
+            width: 8,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              signaling.hangUp(_localRenderer);
+            },
+            child: Text("Hangup"),
           ),
           SizedBox(height: 8),
           Expanded(

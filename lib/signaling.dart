@@ -28,7 +28,7 @@ class Signaling {
 
   Future<String> createRoom(RTCVideoRenderer remoteRenderer) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    DocumentReference roomRef = db.collection('rooms').doc();
+    DocumentReference roomRef = db.collection('rooms').doc("test");
 
     print('Create PeerConnection with configuration: $configuration');
 
