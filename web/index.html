@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -22,11 +23,12 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>chat</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
@@ -42,22 +44,22 @@
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
-       <script>
-        // TODO: Replace the following with your app's Firebase project configuration
-        // For Firebase JavaScript SDK v7.20.0 and later, `measurementId` is an optional field
-        var firebaseConfig = {
-          apiKey: "AIzaSyDLlAxG_8f5iMfVODSkh9UWhuVi5ccMM_g",
-          authDomain: "random-chat-34fe3.firebaseapp.com",
-          projectId: "random-chat-34fe3",
-          storageBucket: "random-chat-34fe3.appspot.com",
-          messagingSenderId: "1098982443506",
-          appId: "1:1098982443506:web:8927eaa0509e31d837036b",
-          measurementId: "G-FQ1SS36CTD"
-        };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-      </script>
+  <script>
+    // TODO: Replace the following with your app's Firebase project configuration
+    // For Firebase JavaScript SDK v7.20.0 and later, `measurementId` is an optional field
+    var firebaseConfig = {
+      apiKey: "AIzaSyDLlAxG_8f5iMfVODSkh9UWhuVi5ccMM_g",
+      authDomain: "random-chat-34fe3.firebaseapp.com",
+      projectId: "random-chat-34fe3",
+      storageBucket: "random-chat-34fe3.appspot.com",
+      messagingSenderId: "1098982443506",
+      appId: "1:1098982443506:web:8927eaa0509e31d837036b",
+      measurementId: "G-FQ1SS36CTD"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('flutter-first-frame', function () {
@@ -65,7 +67,8 @@
       });
     }
   </script>
-  
+
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
+
 </html>

@@ -65,21 +65,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    signaling.openUserMedia(_localRenderer, _remoteRenderer);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Welcome to Flutter Explained - WebRTC"),
       ),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: () {
-              signaling.openUserMedia(_localRenderer, _remoteRenderer);
-            },
-            child: Text("Open camera & microphone"),
-          ),
-          SizedBox(
-            width: 8,
-          ),
           ElevatedButton(
             onPressed: () async {
               roomId = await signaling.createRoom(_remoteRenderer);
