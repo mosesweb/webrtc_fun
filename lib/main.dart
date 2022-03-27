@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -31,7 +34,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -40,13 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Signaling signaling = Signaling();
   RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
+  RTCSessionDescription? roomCreated;
   String? roomId;
-  TextEditingController textEditingController = TextEditingController(text: '');
-
+  TextEditingController textEditingController =
+      TextEditingController(text: 'test');
+  late Stream documentStream;
   @override
   void initState() {
     _localRenderer.initialize();
     _remoteRenderer.initialize();
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    Stream documentStream =
+        FirebaseFirestore.instance.collection('rooms').doc('test').snapshots();
 
     signaling.onAddRemoteStream = ((stream) {
       _remoteRenderer.srcObject = stream;
@@ -73,14 +81,19 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: () async {
-              roomId = await signaling.createRoom(_remoteRenderer);
-              textEditingController.text = roomId!;
-              setState(() {});
-            },
-            child: Text("Create room"),
-          ),
+          roomCreated == null
+              ? ElevatedButton(
+                  onPressed: () async {
+                    roomCreated = await signaling.createRoom(_remoteRenderer);
+                    roomId = "test";
+                    textEditingController.text = roomId!;
+                    setState(() {
+                      roomCreated != null;
+                    });
+                  },
+                  child: Text("Create room"),
+                )
+              : Text("You created room"),
           SizedBox(
             width: 8,
           ),
@@ -104,33 +117,49 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Text("Hangup"),
           ),
           SizedBox(height: 8),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(child: RTCVideoView(_localRenderer, mirror: true)),
-                  Expanded(child: RTCVideoView(_remoteRenderer)),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Join the following Room: "),
-                Flexible(
-                  child: TextFormField(
-                    controller: textEditingController,
-                  ),
+
+          // RTCVideoView(_localRenderer, mirror: true),
+          // RTCVideoView(_remoteRenderer),
+          Center(
+              child: Stack(
+                  alignment: AlignmentDirectional.topStart,
+                  children: <Widget>[
+                Container(
+                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(color: Colors.black54),
+                  child: RTCVideoView(_localRenderer, mirror: true),
                 )
-              ],
-            ),
-          ),
-          SizedBox(height: 8)
+              ])),
+          Text("The one you are talking to"),
+          Center(
+              child: Stack(
+                  alignment: AlignmentDirectional.topStart,
+                  children: <Widget>[
+                Container(
+                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                  width: 400,
+                  height: 400,
+                  decoration: BoxDecoration(color: Colors.black54),
+                  child: RTCVideoView(_remoteRenderer),
+                )
+              ]))
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       Text("Join the following Room: "),
+          //       Flexible(
+          //         child: TextFormField(
+          //           controller: textEditingController,
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // ),
+          // SizedBox(height: 8)
         ],
       ),
     );

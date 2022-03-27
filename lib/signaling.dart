@@ -26,7 +26,8 @@ class Signaling {
   String? currentRoomText;
   StreamStateCallback? onAddRemoteStream;
 
-  Future<String> createRoom(RTCVideoRenderer remoteRenderer) async {
+  Future<RTCSessionDescription?> createRoom(
+      RTCVideoRenderer remoteRenderer) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
     DocumentReference roomRef = db.collection('rooms').doc("test");
 
@@ -107,7 +108,7 @@ class Signaling {
     });
     // Listen for remote ICE candidates above
 
-    return roomId;
+    return offer;
   }
 
   Future<void> joinRoom(String roomId, RTCVideoRenderer remoteVideo) async {
@@ -206,18 +207,15 @@ class Signaling {
       remoteStream!.getTracks().forEach((track) => track.stop());
     }
     if (peerConnection != null) peerConnection!.close();
+    var db = FirebaseFirestore.instance;
+    var roomRef = db.collection('rooms').doc("test");
+    var calleeCandidates = await roomRef.collection('calleeCandidates').get();
+    calleeCandidates.docs.forEach((document) => document.reference.delete());
 
-    if (roomId != null) {
-      var db = FirebaseFirestore.instance;
-      var roomRef = db.collection('rooms').doc(roomId);
-      var calleeCandidates = await roomRef.collection('calleeCandidates').get();
-      calleeCandidates.docs.forEach((document) => document.reference.delete());
+    var callerCandidates = await roomRef.collection('callerCandidates').get();
+    callerCandidates.docs.forEach((document) => document.reference.delete());
 
-      var callerCandidates = await roomRef.collection('callerCandidates').get();
-      callerCandidates.docs.forEach((document) => document.reference.delete());
-
-      await roomRef.delete();
-    }
+    await roomRef.delete();
 
     localStream!.dispose();
     remoteStream?.dispose();
